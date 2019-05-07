@@ -5,30 +5,5 @@
   width: 500px;
   margin: 0 auto;
   border: 1px solid #eeeeee;
-}
-
-.header {
-  padding: 5px 10px;
-  display: flex;
-  align-items: center;
-  border-bottom: 1px solid #999999;
-}
-
-.header img {
-  margin: auto;
-  cursor: pointer;
-}
-
-.header input {
-  width: 76%;
-  height: 25px;
-  padding: 5px 10px;
-  border: none;
-  outline: none;
-  font-size: 19px;
-  color: #555555;
-}
-
-::placeholder {
-  color: #dddddd;
+  color: #333333;
 }

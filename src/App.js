@@ -1,9 +1,8 @@
 import React, { Component } from "react";
 import "./App.css";
-import checkAll from "./img/check-all.svg";
-import add from "./img/add.svg";
 import Header from "./components/Header";
 import TodoItem from "./components/TodoItem";
+import Footer from "./components/Footer";
 
 class App extends Component {
   constructor() {
@@ -40,14 +39,18 @@ class App extends Component {
     };
   };
 
+  onButtonClick = _ => {};
+
   chooseAllItems = _ => {
-    return this.setState({
-      todoItems: [
-        { title: "Read Sapiens", isDone: true },
-        { title: "Work out", isDone: true },
-        { title: "Finish React exercises", isDone: true }
-      ]
-    });
+    let { todoItems } = this.state;
+
+    for (let i = 0; i < todoItems.length; i++) {
+      if (!todoItems[i].isDone) {
+        todoItems[i].isDone = true;
+      }
+    }
+
+    return this.setState({ todoItems });
   };
 
   deleteItem = item => {
@@ -61,9 +64,9 @@ class App extends Component {
     };
   };
 
-  onKeyUp = e => {
-    if (e.keyCode === 13) {
-      let title = e.target.value;
+  onKeyUp = event => {
+    if (event.keyCode === 13) {
+      let title = event.target.value;
       const { todoItems } = this.state;
 
       if (!title) return;
@@ -73,13 +76,7 @@ class App extends Component {
 
       return this.setState({
         newItem: "",
-        todoItems: [
-          {
-            title,
-            isDone: false
-          },
-          ...todoItems
-        ]
+        todoItems: [{ title, isDone: false }, ...todoItems]
       });
     } else {
       return;
@@ -94,13 +91,14 @@ class App extends Component {
 
   render() {
     let { todoItems, newItem } = this.state;
+    let countItem = todoItems.length;
 
     return (
       <div className="App">
         <Header
           onClick={this.chooseAllItems}
           onKeyUp={this.onKeyUp}
-          newItem={this.newItem}
+          newItem={newItem}
           onChange={this.onChange}
         />
 
@@ -113,6 +111,8 @@ class App extends Component {
               deleteItem={this.deleteItem(item)}
             />
           ))}
+
+        <Footer countItem={countItem} onClick={this.onButtonClick} />
       </div>
     );
   }

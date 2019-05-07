@@ -21,5 +21,6 @@
 }
 
 ::placeholder {
-  color: #dddddd;
+  color: #cccccc;
+  font-style: italic;
 }

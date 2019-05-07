@@ -12,19 +12,21 @@ class TodoItem extends Component {
 
     let url = item.isDone === true ? checkImg : uncheckImg;
 
-    let className = classNames("TodoItem", this.props.className, {
+    let className = classNames("TodoItem", {
       "TodoItem-done": item.isDone
     });
-
-    if (item.isDone) {
-      className += " TodoItem-done";
-    }
 
     return (
       <div className={className}>
         <img onClick={onClick} src={url} width={25} height={25} alt="Icon" />
         <p>{item.title}</p>
-        <img onClick={deleteItem} src={crossImg} width={10} height={10} alt="Delete" />
+        <img
+          onClick={deleteItem}
+          src={crossImg}
+          width={10}
+          height={10}
+          alt="Delete"
+        />
       </div>
     );
   }
