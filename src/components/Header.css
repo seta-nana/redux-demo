@@ -1,12 +1,3 @@
-.App {
-  font-family: "Roboto", Arial, sans-serif;
-  font-weight: 300;
-  font-size: 20px;
-  width: 500px;
-  margin: 0 auto;
-  border: 1px solid #eeeeee;
-}
-
 .header {
   padding: 5px 10px;
   display: flex;

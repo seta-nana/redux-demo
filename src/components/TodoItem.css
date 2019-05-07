@@ -1,0 +1,34 @@
+.TodoItem {
+  color: #f233e3;
+  user-select: none;
+  border: 1px solid #eeeeee;
+  display: flex;
+  align-items: center;
+  position: relative;
+}
+
+.TodoItem > p {
+  margin: 0;
+  padding: 10px;
+}
+
+.TodoItem img {
+  margin: auto 15px;
+  cursor: pointer;
+}
+
+.TodoItem p ~ img {
+  position: absolute;
+  right: 0;
+  display: none;
+  cursor: pointer;
+}
+
+.TodoItem:hover p ~ img {
+  display: inline-block;
+}
+
+.TodoItem-done {
+  text-decoration: line-through;
+  opacity: 0.4;
+}
