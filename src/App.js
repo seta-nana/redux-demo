@@ -11,9 +11,9 @@ class App extends Component {
       newItem: "",
       currentFilter: "all",
       todoItems: [
-        { title: "Read Sapiens", isDone: false },
-        { title: "Work out", isDone: false },
-        { title: "Finish React exercises", isDone: false }
+        // { title: "Read Sapiens", isDone: false },
+        // { title: "Work out", isDone: false },
+        // { title: "Finish React exercises", isDone: false }
       ]
     };
     // Solution 1 - Bind then onItemClick(item) { ... }
@@ -39,7 +39,39 @@ class App extends Component {
     };
   };
 
-  onButtonClick = _ => {};
+  filter = _ => {
+    let { currentFilter, todoItems } = this.state;
+
+    todoItems = todoItems.filter(item => {
+      if (currentFilter === "active") {
+        return item.isDone === false;
+      } else if (currentFilter === "completed") {
+        return item.isDone === true;
+      } else {
+        return item;
+      }
+    });
+
+    return todoItems;
+  };
+
+  currentFilterAll = _ => {
+    return this.setState({
+      currentFilter: "all"
+    });
+  };
+
+  currentFilterActive = _ => {
+    return this.setState({
+      currentFilter: "active"
+    });
+  };
+
+  currentFilterCompleted = _ => {
+    return this.setState({
+      currentFilter: "completed"
+    });
+  };
 
   chooseAllItems = _ => {
     let { todoItems } = this.state;
@@ -90,7 +122,8 @@ class App extends Component {
   };
 
   render() {
-    let { todoItems, newItem } = this.state;
+    let todoItems = this.filter();
+    let { newItem } = this.state;
     let countItem = todoItems.length;
 
     return (
@@ -112,7 +145,12 @@ class App extends Component {
             />
           ))}
 
-        <Footer countItem={countItem} onClick={this.onButtonClick} />
+        <Footer
+          countItem={countItem}
+          currentFilterAll={this.currentFilterAll}
+          currentFilterActive={this.currentFilterActive}
+          currentFilterCompleted={this.currentFilterCompleted}
+        />
       </div>
     );
   }

@@ -3,18 +3,23 @@ import "./Footer.css";
 
 class Footer extends Component {
   render() {
-    const { countItem, onClick } = this.props;
+    const {
+      countItem,
+      currentFilterAll,
+      currentFilterActive,
+      currentFilterCompleted
+    } = this.props;
 
     return (
       <div className="Footer">
         <div className="countItem">{countItem} items left</div>
-        <button onClick={onClick} className="filter">
+        <button onClick={currentFilterAll} className="filter">
           All
         </button>
-        <button onClick={onClick} className="filter">
+        <button onClick={currentFilterActive} className="filter">
           Active
         </button>
-        <button onClick={onClick} className="filter">
+        <button onClick={currentFilterCompleted} className="filter">
           Completed
         </button>
       </div>
