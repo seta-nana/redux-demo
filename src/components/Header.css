@@ -6,12 +6,12 @@
 }
 
 .header img {
-  margin: auto;
+  margin: auto 8px;
   cursor: pointer;
 }
 
 .header input {
-  width: 76%;
+  width: 86%;
   height: 25px;
   padding: 5px 10px;
   border: none;

@@ -10,45 +10,40 @@ class App extends Component {
     this.state = {
       newItem: "",
       currentFilter: "all",
-      todoItems: [
-        // { title: "Read Sapiens", isDone: false },
-        // { title: "Work out", isDone: false },
-        // { title: "Finish React exercises", isDone: false }
-      ]
+      todoItems: []
     };
     // Solution 1 - Bind then onItemClick(item) { ... }
     // this.onItemClick = this.onItemClick.bind(this);
   }
+  // Retrieving data from the localStorage
+  componentDidMount() {
+    let todoItems = [];
+    const keys = Object.keys(localStorage);
+    let title, isDone;
+
+    for (let i = 0; i < keys.length; i++) {
+      title = keys[i];
+      isDone = JSON.parse(localStorage.getItem(title));
+
+      todoItems.push({ title, isDone });
+    }
+
+    this.setState({
+      todoItems
+    });
+  }
   // Solution 2 - arrow function
-  onItemClick = item => {
-    return event => {
-      const isDone = item.isDone;
-      const { todoItems } = this.state;
-      const index = todoItems.indexOf(item);
-
-      this.setState({
-        todoItems: [
-          ...todoItems.slice(0, index),
-          {
-            ...item,
-            isDone: !isDone
-          },
-          ...todoItems.slice(index + 1)
-        ]
-      });
-    };
-  };
-
-  filter = _ => {
+  filterItem = _ => {
     let { currentFilter, todoItems } = this.state;
 
     todoItems = todoItems.filter(item => {
-      if (currentFilter === "active") {
-        return item.isDone === false;
-      } else if (currentFilter === "completed") {
-        return item.isDone === true;
-      } else {
-        return item;
+      switch (currentFilter) {
+        case "active":
+          return item.isDone === false;
+        case "completed":
+          return item.isDone === true;
+        default:
+          return item;
       }
     });
 
@@ -73,7 +68,7 @@ class App extends Component {
     });
   };
 
-  chooseAllItems = _ => {
+  selectAllItems = _ => {
     let { todoItems } = this.state;
 
     for (let i = 0; i < todoItems.length; i++) {
@@ -93,6 +88,29 @@ class App extends Component {
       this.setState({
         todoItems: [...todoItems.slice(0, index), ...todoItems.slice(index + 1)]
       });
+      // Delete item in the localStorage
+      localStorage.removeItem(todoItems[index].title);
+    };
+  };
+
+  onItemClick = item => {
+    return event => {
+      const isDone = item.isDone;
+      const { todoItems } = this.state;
+      const index = todoItems.indexOf(item);
+
+      this.setState({
+        todoItems: [
+          ...todoItems.slice(0, index),
+          {
+            ...item,
+            isDone: !isDone
+          },
+          ...todoItems.slice(index + 1)
+        ]
+      });
+      // Update isDone in the localStorage
+      localStorage.setItem(item.title, !item.isDone);
     };
   };
 
@@ -105,14 +123,16 @@ class App extends Component {
 
       title = title.trim();
       if (!title) return;
+      // Add a new item to the localStorage
+      localStorage.setItem(title, "false");
 
       return this.setState({
         newItem: "",
         todoItems: [{ title, isDone: false }, ...todoItems]
       });
-    } else {
-      return;
     }
+
+    return;
   };
 
   onChange = e => {
@@ -122,35 +142,39 @@ class App extends Component {
   };
 
   render() {
-    let todoItems = this.filter();
-    let { newItem } = this.state;
+    let todoItems = this.filterItem();
+    let { newItem, currentFilter } = this.state;
     let countItem = todoItems.length;
 
     return (
       <div className="App">
-        <Header
-          onClick={this.chooseAllItems}
-          onKeyUp={this.onKeyUp}
-          newItem={newItem}
-          onChange={this.onChange}
-        />
+        <h1>Todos</h1>
+        <div className="App-container">
+          <Header
+            onClick={this.selectAllItems}
+            onKeyUp={this.onKeyUp}
+            newItem={newItem}
+            onChange={this.onChange}
+          />
 
-        {todoItems.length > 0 &&
-          todoItems.map((item, index) => (
-            <TodoItem
-              key={index}
-              item={item}
-              onClick={this.onItemClick(item)}
-              deleteItem={this.deleteItem(item)}
-            />
-          ))}
+          {todoItems.length > 0 &&
+            todoItems.map((item, index) => (
+              <TodoItem
+                key={index}
+                item={item}
+                onClick={this.onItemClick(item)}
+                deleteItem={this.deleteItem(item)}
+              />
+            ))}
 
-        <Footer
-          countItem={countItem}
-          currentFilterAll={this.currentFilterAll}
-          currentFilterActive={this.currentFilterActive}
-          currentFilterCompleted={this.currentFilterCompleted}
-        />
+          <Footer
+            countItem={countItem}
+            currentFilter={currentFilter}
+            currentFilterAll={this.currentFilterAll}
+            currentFilterActive={this.currentFilterActive}
+            currentFilterCompleted={this.currentFilterCompleted}
+          />
+        </div>
       </div>
     );
   }

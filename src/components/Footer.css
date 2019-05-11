@@ -11,14 +11,14 @@
 .Footer .countItem {
   position: absolute;
   left: 15px;
-  font-size: 16px;
+  font-size: 15px;
 }
 
 .Footer .filter {
   cursor: pointer;
   border-radius: 10px;
   border: 1px solid #eeeeee;
-  padding: 5px 10px;
+  padding: 4px 10px;
   margin: auto 5px;
   outline: none;
   background: transparent;
@@ -26,6 +26,16 @@
 }
 
 .Footer .filter-active {
-  border: 1px solid #999999;
+  border: 1px solid #777777;
   color: inherit;
+}
+
+@media (max-width: 500px) {
+  .Footer {
+    justify-content: flex-end;
+  }
+
+  .Footer .filter {
+    margin: auto 0;
+  }
 }
