@@ -4,6 +4,16 @@ import checkAll from "../img/check-all.svg";
 // import add from "../img/add.svg";
 
 class Header extends Component {
+  constructor(props) {
+    super(props);
+    // Create a reference to input
+    this.inputElement = React.createRef();
+  }
+  // Auto focus on input
+  componentDidMount() {
+    this.inputElement.current.focus();
+  }
+
   render() {
     const { onClick, onKeyUp, newItem, onChange } = this.props;
 
@@ -22,6 +32,7 @@ class Header extends Component {
           onKeyUp={onKeyUp}
           value={newItem}
           onChange={onChange}
+          ref={this.inputElement}
         />
         {/* <img src={add} width={20} height={20} alt="Add" /> */}
       </div>
