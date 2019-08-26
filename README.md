@@ -1,4 +1,4 @@
-Todo App my **React Project** at **CodersX**, a community to learn web developement in Vietnam.
+Todo App is my **React Project** at **CodersX**, a community to learn web developement in Vietnam.
 
 Features: add items, delete items, mark all items, and filter items.
 
