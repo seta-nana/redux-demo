@@ -1,7 +1,6 @@
 import React, { Component } from "react";
 import "./Header.css";
 import checkAll from "../img/check-all.svg";
-// import add from "../img/add.svg";
 
 class Header extends Component {
   constructor(props) {
@@ -34,7 +33,6 @@ class Header extends Component {
           onChange={onChange}
           ref={this.inputElement}
         />
-        {/* <img src={add} width={20} height={20} alt="Add" /> */}
       </div>
     );
   }
