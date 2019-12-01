@@ -2,7 +2,11 @@ import React from "react";
 import classNames from "classnames";
 import { connect } from "react-redux";
 
-import { filterAll, filterActive, filterCompleted } from "../redux";
+import {
+  filterAll,
+  filterActive,
+  filterCompleted
+} from "../state/modules/todos";
 
 import "./Footer.css";
 
@@ -45,8 +49,8 @@ function Footer({
 
 export default connect(
   state => ({
-    todoList: state.addTodo.todoList,
-    currentFilter: state.filterTodo.filter
+    todoList: state.todos.todoList,
+    currentFilter: state.todos.filter
   }),
   dispatch => ({
     filterActive: () => dispatch(filterActive()),

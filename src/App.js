@@ -5,7 +5,8 @@ import { arrayOf, shape, string, bool, func } from "prop-types";
 import Header from "./components/Header";
 import TodoItem from "./components/TodoItem";
 import Footer from "./components/Footer";
-import { addTodo, deleteTodo } from "./redux";
+
+import { addTodo, deleteTodo } from "./state/modules/todos";
 
 import "./App.css";
 
@@ -78,8 +79,8 @@ App.propTypes = {
 
 export default connect(
   state => ({
-    todoList: state.addTodo.todoList,
-    filter: state.filterTodo.filter
+    todoList: state.todos.todoList,
+    filter: state.todos.filter
   }),
   dispatch => ({
     addTodo: todo => dispatch(addTodo(todo)),
