@@ -1,44 +1,56 @@
-import React, { Component } from "react";
-import classNames from 'classnames';
+import React from "react";
+import classNames from "classnames";
+import { connect } from "react-redux";
+
+import { filterAll, filterActive, filterCompleted } from "../redux";
+
 import "./Footer.css";
 
-class Footer extends Component {
-  render() {
-    const {
-      countItem,
-      currentFilter,
-      currentFilterAll,
-      currentFilterActive,
-      currentFilterCompleted
-    } = this.props;
+function Footer({
+  todoList,
+  currentFilter,
+  filterAll,
+  filterActive,
+  filterCompleted
+}) {
+  let all = classNames("filter", {
+    "filter-active": currentFilter === "all"
+  });
 
-    let all = classNames('filter', {
-      'filter-active': currentFilter === 'all'
-    });
+  let active = classNames("filter", {
+    "filter-active": currentFilter === "active"
+  });
 
-    let active = classNames('filter', {
-      'filter-active': currentFilter === 'active'
-    });
+  let completed = classNames("filter", {
+    "filter-active": currentFilter === "completed"
+  });
 
-    let completed = classNames('filter', {
-      'filter-active': currentFilter === 'completed'
-    });
+  const countItem = todoList.length;
 
-    return (
-      <div className="Footer">
-        <div className="countItem">{countItem} items left</div>
-        <button onClick={currentFilterAll} className={all}>
-          All
-        </button>
-        <button onClick={currentFilterActive} className={active}>
-          Active
-        </button>
-        <button onClick={currentFilterCompleted} className={completed}>
-          Completed
-        </button>
-      </div>
-    );
-  }
+  return (
+    <div className="Footer">
+      <div className="countItem">{countItem} items left</div>
+      <button onClick={filterAll} className={all}>
+        All
+      </button>
+      <button onClick={filterActive} className={active}>
+        Active
+      </button>
+      <button onClick={filterCompleted} className={completed}>
+        Completed
+      </button>
+    </div>
+  );
 }
 
-export default Footer;
+export default connect(
+  state => ({
+    todoList: state.addTodo.todoList,
+    currentFilter: state.filterTodo.filter
+  }),
+  dispatch => ({
+    filterActive: () => dispatch(filterActive()),
+    filterAll: () => dispatch(filterAll()),
+    filterCompleted: () => dispatch(filterCompleted())
+  })
+)(Footer);

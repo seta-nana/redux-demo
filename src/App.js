@@ -1,183 +1,88 @@
-import React, { Component } from "react";
-import "./App.css";
+import React, { useState, useMemo } from "react";
+import { connect } from "react-redux";
+import { arrayOf, shape, string, bool, func } from "prop-types";
+
 import Header from "./components/Header";
 import TodoItem from "./components/TodoItem";
 import Footer from "./components/Footer";
+import { addTodo, deleteTodo } from "./redux";
 
-class App extends Component {
-  constructor() {
-    super();
-    this.state = {
-      newItem: "",
-      currentFilter: "all",
-      todoItems: []
-    };
-    // Solution 1 - Bind then onItemClick(item) { ... }
-    // this.onItemClick = this.onItemClick.bind(this);
-  }
-  // Retrieving data from the localStorage
-  componentDidMount() {
-    let todoItems = [];
-    const keys = Object.keys(localStorage);
-    let title, isDone;
+import "./App.css";
 
-    for (let i = 0; i < keys.length; i++) {
-      title = keys[i];
-      isDone = JSON.parse(localStorage.getItem(title));
+function App({ todoList, filter, addTodo, deleteTodo }) {
+  const [newItem, setNewItem] = useState("");
+  const filteredTodos = useMemo(() => filterItem(todoList, filter), [
+    todoList,
+    filter
+  ]);
 
-      todoItems.push({ title, isDone });
+  function filterItem(todoList, filter) {
+    if (todoList && todoList.length) {
+      const filteredTodos = todoList.filter(item => {
+        switch (filter) {
+          case "active":
+            return item.isDone === false;
+          case "completed":
+            return item.isDone === true;
+          default:
+            return item;
+        }
+      });
+      return filteredTodos;
     }
 
-    this.setState({
-      todoItems
-    });
+    return todoList;
   }
-  // Solution 2 - arrow function
-  filterItem = _ => {
-    let { currentFilter, todoItems } = this.state;
 
-    todoItems = todoItems.filter(item => {
-      switch (currentFilter) {
-        case "active":
-          return item.isDone === false;
-        case "completed":
-          return item.isDone === true;
-        default:
-          return item;
-      }
-    });
-
-    return todoItems;
-  };
-
-  currentFilterAll = _ => {
-    return this.setState({
-      currentFilter: "all"
-    });
-  };
-
-  currentFilterActive = _ => {
-    return this.setState({
-      currentFilter: "active"
-    });
-  };
-
-  currentFilterCompleted = _ => {
-    return this.setState({
-      currentFilter: "completed"
-    });
-  };
-
-  selectAllItems = _ => {
-    let { todoItems } = this.state;
-
-    for (let i = 0; i < todoItems.length; i++) {
-      if (!todoItems[i].isDone) {
-        todoItems[i].isDone = true;
-      }
-    }
-
-    return this.setState({ todoItems });
-  };
-
-  deleteItem = item => {
-    return event => {
-      const { todoItems } = this.state;
-      const index = todoItems.indexOf(item);
-
-      this.setState({
-        todoItems: [...todoItems.slice(0, index), ...todoItems.slice(index + 1)]
-      });
-      // Delete item in the localStorage
-      localStorage.removeItem(todoItems[index].title);
-    };
-  };
-
-  onItemClick = item => {
-    return event => {
-      const isDone = item.isDone;
-      const { todoItems } = this.state;
-      const index = todoItems.indexOf(item);
-
-      this.setState({
-        todoItems: [
-          ...todoItems.slice(0, index),
-          {
-            ...item,
-            isDone: !isDone
-          },
-          ...todoItems.slice(index + 1)
-        ]
-      });
-      // Update isDone in the localStorage
-      localStorage.setItem(item.title, !item.isDone);
-    };
-  };
-
-  onKeyUp = event => {
+  const onKeyUp = event => {
     if (event.keyCode === 13) {
-      let title = event.target.value;
-      const { todoItems } = this.state;
+      const title = event.target.value;
 
-      if (!title) return;
+      if (!title || !title.trim()) return;
 
-      title = title.trim();
-      if (!title) return;
-      // Add a new item to the localStorage
-      localStorage.setItem(title, "false");
-
-      return this.setState({
-        newItem: "",
-        todoItems: [{ title, isDone: false }, ...todoItems]
-      });
+      addTodo({ title, isDone: false });
+      setNewItem("");
     }
-
-    return;
   };
 
-  onChange = e => {
-    return this.setState({
-      newItem: e.target.value
-    });
+  const onChange = e => {
+    const value = e.target.value;
+    setNewItem(value);
   };
 
-  render() {
-    let todoItems = this.filterItem();
-    let { newItem, currentFilter } = this.state;
-    let countItem = todoItems.length;
-
-    return (
-      <div className="App">
-        <h1>Todos</h1>
-        <div className="App-container">
-          <Header
-            onClick={this.selectAllItems}
-            onKeyUp={this.onKeyUp}
-            newItem={newItem}
-            onChange={this.onChange}
-          />
-
-          {todoItems.length > 0 &&
-            todoItems.map((item, index) => (
-              <TodoItem
-                key={index}
-                item={item}
-                onClick={this.onItemClick(item)}
-                deleteItem={this.deleteItem(item)}
-              />
-            ))}
-
-          <Footer
-            countItem={countItem}
-            currentFilter={currentFilter}
-            currentFilterAll={this.currentFilterAll}
-            currentFilterActive={this.currentFilterActive}
-            currentFilterCompleted={this.currentFilterCompleted}
-          />
-        </div>
+  return (
+    <div className="App">
+      <h1>Todos</h1>
+      <div className="App-container">
+        <Header onKeyUp={onKeyUp} newItem={newItem} onChange={onChange} />
+        {filteredTodos.length > 0 &&
+          filteredTodos.map((item, index) => (
+            <TodoItem key={index} item={item} deleteItem={deleteTodo(item)} />
+          ))}
+        <Footer />
       </div>
-    );
-  }
+    </div>
+  );
 }
 
-export default App;
+App.propTypes = {
+  todoList: arrayOf(
+    shape({
+      title: string,
+      isDone: bool
+    })
+  ),
+  addTodo: func.isRequired,
+  deleteTodo: func.isRequired
+};
+
+export default connect(
+  state => ({
+    todoList: state.addTodo.todoList,
+    filter: state.filterTodo.filter
+  }),
+  dispatch => ({
+    addTodo: todo => dispatch(addTodo(todo)),
+    deleteTodo: todo => () => dispatch(deleteTodo(todo))
+  })
+)(App);
